@@ -1,0 +1,84 @@
+# to build an image name node-app-image
+docker build -t node-app-image .
+
+ #to create a container name node-app of image name node-app-image
+docker run -d --name node-app node-app-image
+
+#get all the images
+docker ps 
+
+ #remove a container
+docker rm node-app -f 
+
+#to assign a port 3000:3000 to the container as localmachine: containerPort   0.0.0.0.3000->4000
+docker run -p 3000:3000 -d --name node-app node-app-image 
+
+#open the container and work on it
+docker exec -it node-app bash 
+
+
+#sync folder with the /app inside the container
+docker run -v D:\DevOps FreeCodeCamp\NodeJSDocker\: /app -p 3000:3000 -d --name node-app node-app-image      
+docker run -v ${pwd} || %cd% : /app -p 3000:3000 -d --name node-app node-app-image  
+
+
+#sync folder with the /app inside the container as new volumes to tell that never delete the node_modules from the container
+docker run -v ${pwd} || %cd% : /app  -v /app/node_modules -p 3000:3000 -d --name node-app node-app-image  
+ 
+ 
+ 
+ #to know  all the containers both running and not running
+docker ps -a
+
+
+
+#to know about the console inside the container to know actually how is it running
+docker logs node-app 
+
+
+#for read only: so that a small change in the local file does not change the files in the container (live)
+docker run -v ${pwd} || %cd% :/app:ro -p 3000:3000 -d --name node-app node-app-image  
+
+
+#set .env file 
+docker run -v ${pwd}:/app:ro -v /app/node_modules --env PORT=4000 -p 3000:4000 -d --name node-app node-app-image
+docker run -v ${pwd}:/app:ro -v /app/node_modules --env-file ./.env -p 3000:4000 -d --name node-app node-app-image
+#printenv to know about the environment variable files
+
+
+#to know how many contaner layers r there
+docker volume ps
+
+
+#to delete all the unused volumes
+docker volume prune 
+docker rm node-app -fv
+
+# docker compose to automate the docker building 
+# before this build a image to let docker know that you have made changes
+docker-compose up -d --build
+docker-compose up -d
+docker-compose down -v
+
+
+
+#for dev environment
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml down -v
+
+
+#for prod environment
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v
+
+
+
+
+
+#working with mongo image
+
+docker exec -it nodejsdocker_mongo_1 mongosh -u "swag" -p "pass"     
+
+
+
+ docker logs nodejsdocker_node-app_1
